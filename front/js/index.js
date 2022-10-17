@@ -13,6 +13,7 @@ class Product {
 
 
 // Methode Fetch pour récupèrer la liste des produits sur l'api puis transformer cette liste en nouvelle liste grâce au .map
+//fonction map : transformer la liste issue de getAllProduct en une autre liste
 function getAllProducts() {
     return fetch("http://localhost:3000/api/products")
         .then(function (res) {
@@ -22,7 +23,7 @@ function getAllProducts() {
         })
         .then(function (value) {
             console.log(value);
-            return value.map(function (val) {
+            return value.map((val) => {
                 return new Product(val.colors, val._id, val.name, val.price, val.imageUrl, val.description, val.altTxt)
             })
 
@@ -63,17 +64,14 @@ function createHtlmFromProducts(products) {
     }
 }
 
-// chaque element create element 
+// appel des fonctions 
 getAllProducts().then(function (products) {
-    console.log(products);
     createHtlmFromProducts(products);
-
-
 });
 
 
 
-//fonction map : transformer la liste issue de getAllProduct en une autre liste
+
 
 //Boucle for pour ranger les produits dans une array -> pour chaque itération créer un objet new Product et le PUSH dans une array prévue a cet effet
 
