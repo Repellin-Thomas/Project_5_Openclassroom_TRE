@@ -24,6 +24,17 @@ if (currentStorage != undefined) {
 }
 
 
+let totalPrice = 0;
+let totalQuantity = 0;
+
+
+function onChangeQuantity(product, quantity, textQuantity) {
+  textQuantity.innerText = "Qté: " + quantity
+  product.quantity = quantity
+  const stringifiedCart = JSON.stringify(cart)
+  localStorage.setItem("item", stringifiedCart)
+};
+
 function createCartHtml(products) {
   for (let product of products) {
     //structure globale
@@ -73,15 +84,92 @@ function createCartHtml(products) {
     quantityInput.setAttribute("max", 100)
     quantityInput.setAttribute("value", product.quantity)
     quantityInput.setAttribute("name", "itemQUantity")
+    //Event listener sur la qtt 
+
+    quantityInput.addEventListener("change", event => onChangeQuantity(product, event.target.value, itemQuantity))
     //bouton delete 
     let deleteButton = document.createElement("p")
     contentSettings.appendChild(deleteButton)
     deleteButton.classList.add("deleteItem")
     deleteButton.innerText = "Supprimer"
 
-  }
 
+    //calcul du total 
+    totalPrice += product.quantity * product.price
+    totalQuantity += product.quantity
+
+
+
+  }
+  //affichage du total
+  let cartTotal = document.getElementById("totalPrice");
+  let totalItems = document.getElementById("totalQuantity");
+  cartTotal.innerText = totalPrice;
+  totalItems.innerText = totalQuantity;
 }
+
+
+//REGEX validation de formulaire 
+
+let firstName = document.getElementById("firstName")
+firstName.addEventListener("input", function (event) {
+  let isFirstNameValid = /^[A-Za-z ]+$/.test(event.target.value)
+  const firstNameError = document.getElementById("firstNameErrorMsg")
+  if (!isFirstNameValid) {
+    firstNameError.innerText = "Merci de rentrer un prénom valide"
+  } else {
+    firstNameError.innerText = ""
+  }
+})
+let lastName = document.getElementById("lastName")
+lastName.addEventListener("input", function (event) {
+  let isLastNameValid = /^[A-Za-z ]+$/.test(event.target.value)
+  const lastNameError = document.getElementById("lastNameErrorMsg")
+  if (!isLastNameValid) {
+    lastNameError.innerText = "Merci de rentrer un nom valide"
+  }
+  else {
+    LastNameError.innerText = ""
+  }
+})
+let address = document.getElementById("address")
+address.addEventListener("input", function (event) {
+  let isAddressValid = /^[A-Za-z0-9 ,'-]+$/.test(event.target.value)
+  const AddressError = document.getElementById("addressErrorMsg")
+  if (!isAddressValid) {
+    AddressError.innerText = "Merci de rentrer une adresse valide"
+  }
+  else {
+    AddressError.innerText = ""
+  }
+})
+let city = document.getElementById("city")
+city.addEventListener("input", function (event) {
+  let isCityValid = /^[A-Za-z]+$/.test(event.target.value)
+  const cityError = document.getElementById("cityErrorMsg")
+  if (!isCityValid) {
+
+    cityError.innerText = "Merci de rentrer une ville valide"
+  }
+  else {
+    cityError.innerText = ""
+  }
+})
+let email = document.getElementById("email")
+city.addEventListener("input", function (event) {
+  let isEmailValid = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(event.target.value)
+  const emailError = document.getElementById("emailErrorMsg")
+  if (!isEmailValid) {
+
+    emailError.innerText = "Merci de rentrer une adresse email valide"
+  }
+  else {
+    emailError.innerText = ""
+  }
+})
+
+
+
 
 createCartHtml(cart);
 

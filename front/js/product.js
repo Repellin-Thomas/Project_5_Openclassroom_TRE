@@ -142,8 +142,6 @@ product.addEventListener('click', function () {
         addToCart(pageId, color, price, quantity, imageUrl, altTxt, productName)
         const stringifiedCart = JSON.stringify(cart)
         localStorage.setItem("item", stringifiedCart)
-        console.log(cart)
-        console.log(localStorage)
     }
 
 })
