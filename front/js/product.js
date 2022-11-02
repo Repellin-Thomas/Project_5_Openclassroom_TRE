@@ -6,7 +6,7 @@ var pageId = url.substring(url.lastIndexOf('=') + 1);
 /*objet de class product pour pourvoir classer les objets dans le local storage en fonction de leur couleur , Id (le id = page id car il sera fixe) et
  en leur associant le prix et la quantité */
 
-//TODO rajouter Nom  imageUrl Alt txt a la classe car nécéssaire dans 
+
 class CartProduct {
     constructor(id, color, price, quantity, imageUrl, altTxt, name) {
         this.id = id;
@@ -28,7 +28,7 @@ let cart = []
 //Si il y un local storage, on le met dans cart en recréant des object de classe (car ce n'est pas le cas dans le local storage)
 if (currentStorage != undefined) {
     cart = JSON.parse(currentStorage);
-    cart = cart.map(x => new CartProduct(x.id, x.color, x.price, x.quantity, x.imageUrl, x.altTxt))
+    cart = cart.map(x => new CartProduct(x.id, x.color, x.price, x.quantity, x.imageUrl, x.altTxt, x.name))
     console.log(cart);
 }
 
@@ -79,7 +79,7 @@ function createCurrentProductHtml(product) {
 }
 
 // fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
-//TODO rajouter page Id dans add to cart et quand elle est appelée 
+
 function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
     let productIndex = isMyProductInCart(id, color)
     if (productIndex >= 0) {
@@ -97,7 +97,6 @@ function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
 
 //calculs pour savoir si le produit existe EN RECUPERANT SON INDICE DANS LA LISTE (i) == .find
 function isMyProductInCart(id, color) {
-    let alreadyInCart = false
     //todo boucle while
     for (let i = 0; i < cart.length; i++) {
         const product = cart[i];

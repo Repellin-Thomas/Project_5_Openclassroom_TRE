@@ -1,5 +1,4 @@
 //Etape 1 récupèrer le local storage et le classer dans une liste de produit 
-
 class CartProduct {
   constructor(color, price, quantity, id, imageUrl, altTxt, name) {
     this.id = id;
@@ -13,6 +12,15 @@ class CartProduct {
   }
 }
 
+class Contact {
+  constructor(userFirstName, userLastName, userAddress, userCity, userEmail) {
+    this.userFirstName = userFirstName;
+    this.userLastname = userLastName;
+    this.userAddress = userAddress;
+    this.userCity = userCity;
+    this.userEmail = userEmail;
+  }
+}
 
 
 let currentStorage = localStorage.getItem("item");
@@ -27,15 +35,28 @@ if (currentStorage != undefined) {
 let totalPrice = 0;
 let totalQuantity = 0;
 
-
+//Gestion du changement de l'input quantity . 
 function onChangeQuantity(product, quantity, textQuantity) {
-  textQuantity.innerText = "Qté: " + quantity
+  textQuantity.textContent = "Qté: " + quantity
   product.quantity = quantity
   const stringifiedCart = JSON.stringify(cart)
   localStorage.setItem("item", stringifiedCart)
+  //recalcul de la quantité et du prix total 
+  let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0)
+  let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0)
+  //MAJ du cart et du local storage 
+  let cartTotal = document.getElementById("totalPrice");
+  let totalItems = document.getElementById("totalQuantity");
+  cartTotal.textContent = priceSum;
+  totalItems.textContent = quantitySum;
+
 };
 
+
+function onClickDeleteFromCart(product) { }
+
 function createCartHtml(products) {
+
   for (let product of products) {
     //structure globale
     let elt = document.getElementById('cart__items');
@@ -61,13 +82,13 @@ function createCartHtml(products) {
     contentDescription.classList.add("cart__item__content__description");
     let itemName = document.createElement("h2");
     contentDescription.appendChild(itemName)
-    itemName.innerText = product.name;
+    itemName.textContent = product.name;
     let itemColor = document.createElement("p");
     contentDescription.appendChild(itemColor)
-    itemColor.innerText = product.color;
+    itemColor.textContent = product.color;
     let itemPrice = document.createElement("p");
     contentDescription.appendChild(itemPrice)
-    itemPrice.innerText = product.price + "€";
+    itemPrice.textContent = product.price + "€";
 
     // quantité et gestion de la quantité 
     let contentSettings = document.createElement("div");
@@ -75,7 +96,7 @@ function createCartHtml(products) {
     contentSettings.classList.add("cart__item__content__settings");
     let itemQuantity = document.createElement("p")
     contentSettings.appendChild(itemQuantity)
-    itemQuantity.innerText = "Qté: " + product.quantity
+    itemQuantity.textContent = "Qté: " + product.quantity
     let quantityInput = document.createElement("input")
     contentSettings.appendChild(quantityInput)
     quantityInput.classList.add("itemQuantity")
@@ -91,85 +112,155 @@ function createCartHtml(products) {
     let deleteButton = document.createElement("p")
     contentSettings.appendChild(deleteButton)
     deleteButton.classList.add("deleteItem")
-    deleteButton.innerText = "Supprimer"
+    deleteButton.textContent = " Supprimer"
+    deleteButton.addEventListener("click", function () {
 
+      // supprime l'article de l'itération actuelle (premier enfant de type article de elt: id =cart__items)
+      elt.removeChild(articleElement)
+      // recherhe de l'indice correspondant dans le tableau cart grace a un .findIndex
+      const cartIndex = cart.findIndex(function (value) {
+        return value.id == product.id && value.color == product.color
+      })
+      // fct splice pour supprimer un element dans cart a partir de l'index trouvé 
+      cart.splice(cartIndex, 1)
+      //Refresh du local storage avec le nouveau cart sans l'élément supprimé 
+      const stringifiedCart = JSON.stringify(cart)
+      localStorage.setItem("item", stringifiedCart)
+      let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0)
+      let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0)
+      //MAJ du cart et du local storage 
+      let cartTotal = document.getElementById("totalPrice");
+      let totalItems = document.getElementById("totalQuantity");
+      cartTotal.textContent = priceSum;
+      totalItems.textContent = quantitySum;
+
+
+    })
 
     //calcul du total 
-    totalPrice += product.quantity * product.price
-    totalQuantity += product.quantity
+    let integerQuantity = parseInt(product.quantity)
+    let integerPrice = parseInt(product.price)
+    totalPrice += integerQuantity * integerPrice
+    totalQuantity += integerQuantity
 
 
 
   }
+
   //affichage du total
   let cartTotal = document.getElementById("totalPrice");
   let totalItems = document.getElementById("totalQuantity");
-  cartTotal.innerText = totalPrice;
-  totalItems.innerText = totalQuantity;
+  cartTotal.textContent = totalPrice;
+  totalItems.textContent = totalQuantity;
 }
 
+//REGEX validation de formulaire TODO faire une methode commune avec en parametre un input a observer et faire un regex en fonction de l'input 
+function isValid(event, regex, errorElement, name) {
+  let isValid = regex.test(event.target.value)
+  if (!isValid) {
+    errorElement.textContent = "Merci de rentrer un(e) " + name + " valide"
 
-//REGEX validation de formulaire 
-
-let firstName = document.getElementById("firstName")
-firstName.addEventListener("input", function (event) {
-  let isFirstNameValid = /^[A-Za-z ]+$/.test(event.target.value)
-  const firstNameError = document.getElementById("firstNameErrorMsg")
-  if (!isFirstNameValid) {
-    firstNameError.innerText = "Merci de rentrer un prénom valide"
-  } else {
-    firstNameError.innerText = ""
   }
+  else {
+    errorElement.textContent = null
+
+  }
+}
+//todo scinder avec un show error is valid ne doit que tester le regex
+
+let userContact = new Contact(undefined, undefined, undefined, undefined, undefined)
+
+let firstName = document.getElementById("firstName");
+firstName.addEventListener("input", function (event) {
+  const firstNameError = document.getElementById("firstNameErrorMsg")
+  let validation = isValid(event, /^[A-Za-z ]+$/, firstNameError, "prénom")
+  userContact.userFirstName = event.target.value
+
 })
+
+
 let lastName = document.getElementById("lastName")
 lastName.addEventListener("input", function (event) {
-  let isLastNameValid = /^[A-Za-z ]+$/.test(event.target.value)
   const lastNameError = document.getElementById("lastNameErrorMsg")
-  if (!isLastNameValid) {
-    lastNameError.innerText = "Merci de rentrer un nom valide"
-  }
-  else {
-    LastNameError.innerText = ""
-  }
+  isValid(event, /^[A-Za-z ]+$/, lastNameError, "nom")
+  userContact.userLastname = event.target.value;
 })
+
+
+
+
 let address = document.getElementById("address")
 address.addEventListener("input", function (event) {
-  let isAddressValid = /^[A-Za-z0-9 ,'-]+$/.test(event.target.value)
-  const AddressError = document.getElementById("addressErrorMsg")
-  if (!isAddressValid) {
-    AddressError.innerText = "Merci de rentrer une adresse valide"
-  }
-  else {
-    AddressError.innerText = ""
-  }
+  const addressError = document.getElementById("addressErrorMsg")
+  isValid(event, /^[A-Za-z0-9 ,'-]+$/, addressError, "adresse")
+  userContact.userAddress = event.target.value
 })
+
+
+
+
 let city = document.getElementById("city")
 city.addEventListener("input", function (event) {
-  let isCityValid = /^[A-Za-z]+$/.test(event.target.value)
   const cityError = document.getElementById("cityErrorMsg")
-  if (!isCityValid) {
-
-    cityError.innerText = "Merci de rentrer une ville valide"
-  }
-  else {
-    cityError.innerText = ""
-  }
+  isValid(event, /^[A-Za-z]+$/, cityError, "ville")
+  userContact.userCity = event.target.value
 })
+
+
+
+
 let email = document.getElementById("email")
-city.addEventListener("input", function (event) {
-  let isEmailValid = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(event.target.value)
+const emailError = document.getElementById("emailErrorMsg")
+email.addEventListener("input", function (event) {
   const emailError = document.getElementById("emailErrorMsg")
-  if (!isEmailValid) {
-
-    emailError.innerText = "Merci de rentrer une adresse email valide"
-  }
-  else {
-    emailError.innerText = ""
-  }
+  isValid(event, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, emailError, "email")
+  userContact.userEmail = event.target.value
 })
 
 
 
+
+
+
+
+/*
+//On click commander
+let orderButton = document.getElementById("order")
+orderButton.addEventListener("click", function (){
+  sendUserCart()
+  sendUserContact()
+})
+
+
+function sendUserCart(element) {
+  return fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(element)
+  })
+    .then(function (res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function (value) {
+      console.log(value);
+
+
+    })
+    .catch(function (err) {
+      // Une erreur est survenue
+    });
+
+};
+
+sendUserCart(userContact)
+
+
+*/
 
 createCartHtml(cart);
 
@@ -181,7 +272,7 @@ createCartHtml(cart);
 
 
 
-// Etape 2 afficher les produits dans le HTML grace aux informations du localStorage
+
 /*  L'architecture du HTML telle qu'elle doit être
  <!--  <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
@@ -205,5 +296,3 @@ createCartHtml(cart);
                 </div>
               </article> -->
               */
-
-// Etape 3 ajouter un event listener sur le bouton delete item : au click il déclenchera une fonction qui supprimera le produit du local storage
