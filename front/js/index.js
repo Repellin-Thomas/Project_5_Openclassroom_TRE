@@ -24,7 +24,7 @@ function getAllProducts() {
         .then(function (value) {
             console.log(value);
             return value.map((val) => {
-                return new Product(val.colors, val._id, val.name, val.price, val.imageUrl, val.description, val.altTxt)
+                return new Product(val.colors, val._id, val.name, val.price, val.imageUrl, val.description, val.altTxt);
             })
 
         })
@@ -54,9 +54,9 @@ function createHtlmFromProducts(products) {
         nameElement.classList.add("productName");
         descriptionElement.classList.add("productDescription");
         //modification d'attributs
-        imgElement.setAttribute('src', product.imageUrl)
-        imgElement.setAttribute('alt', product.altTxt)
-        linkElement.setAttribute('href', './product.html?id=' + product.id)
+        imgElement.setAttribute('src', product.imageUrl);
+        imgElement.setAttribute('alt', product.altTxt);
+        linkElement.setAttribute('href', './product.html?id=' + product.id);
         //modification du dom 
         nameElement.textContent = product.name;
         descriptionElement.textContent = product.description;

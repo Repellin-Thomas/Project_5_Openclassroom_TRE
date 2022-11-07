@@ -22,14 +22,14 @@ class CartProduct {
 
 // on vérifie que le local storage contiens quelque chose et on le met dans le cart 
 let currentStorage = localStorage.getItem("item");
-let cart = []
+let cart = [];
 
 
 //Si il y un local storage, on le met dans cart en recréant des object de classe (car ce n'est pas le cas dans le local storage)
 if (currentStorage != undefined) {
     cart = JSON.parse(currentStorage);
-    cart = cart.map(x => new CartProduct(x.id, x.color, x.price, x.quantity, x.imageUrl, x.altTxt, x.name))
-    console.log(cart);
+    cart = cart.map(x => new CartProduct(x.id, x.color, x.price, x.quantity, x.imageUrl, x.altTxt, x.name));
+
 }
 
 
@@ -41,7 +41,7 @@ function getOneProduct() {
             }
         })
         .then(function (value) {
-            return value
+            return value;
 
         })
         .catch(function (err) {
@@ -59,7 +59,7 @@ function createCurrentProductHtml(product) {
     const imageContainer = document.getElementsByClassName("item__img")[0];
     const imageElement = document.createElement("img");
     imageContainer.appendChild(imageElement);
-    imageElement.setAttribute("src", product.imageUrl)
+    imageElement.setAttribute("src", product.imageUrl);
     //product name
     document.getElementById("title").innerText = product.name;
     //product price
@@ -67,7 +67,7 @@ function createCurrentProductHtml(product) {
     //product description
     document.getElementById("description").innerText = product.description;
     //product color option : (boucle for  sur l'array product. colors ?) parcourir la liste des couleurs et 
-    let colorsArray = product.colors
+    let colorsArray = product.colors;
     const colorsContainer = document.getElementById("colors");
     for (let color of colorsArray) {
         const colorElement = document.createElement("option");
@@ -81,7 +81,7 @@ function createCurrentProductHtml(product) {
 // fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
 
 function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
-    let productIndex = isMyProductInCart(id, color)
+    let productIndex = isMyProductInCart(id, color);
     if (productIndex >= 0) {
         cart[productIndex].quantity += quantity;
 
@@ -89,7 +89,7 @@ function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
     else {
 
         const product = new CartProduct(id, color, price, quantity, imageUrl, altTxt, name);
-        cart.push(product)
+        cart.push(product);
     }
 
 }
@@ -101,7 +101,7 @@ function isMyProductInCart(id, color) {
     for (let i = 0; i < cart.length; i++) {
         const product = cart[i];
         if (color === product.color && id === product.id) {
-            return i
+            return i;
         }
     }
     return -1;
@@ -131,16 +131,16 @@ product.addEventListener('click', function () {
     // on récupère les VALEURS de color quantity et price et on les mets dans des variables 
     let color = document.getElementById('colors').value;
     let quantity = document.getElementById('quantity').value;
-    let price = document.getElementById('price').textContent
-    let image = document.getElementBy
+    let price = document.getElementById('price').textContent;
+    let image = document.getElementBy;
     // parse int permet de transformer les prix et quantité string en integer
     quantity = parseInt(quantity);
     price = parseInt(price);
     // if color empeche le produit d'être ajouté si il n'y a pas de couleur sélectionnée 
     if (color != undefined && quantity > 0) {
         addToCart(pageId, color, price, quantity, imageUrl, altTxt, productName)
-        const stringifiedCart = JSON.stringify(cart)
-        localStorage.setItem("item", stringifiedCart)
+        const stringifiedCart = JSON.stringify(cart);
+        localStorage.setItem("item", stringifiedCart);
     }
 
 })

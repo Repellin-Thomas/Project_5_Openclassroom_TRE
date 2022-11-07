@@ -11,14 +11,18 @@ class CartProduct {
 
   }
 }
-
+class CartId {
+  constructor(id) {
+    this.id = id;
+  }
+}
 class Contact {
-  constructor(userFirstName, userLastName, userAddress, userCity, userEmail) {
-    this.userFirstName = userFirstName;
-    this.userLastname = userLastName;
-    this.userAddress = userAddress;
-    this.userCity = userCity;
-    this.userEmail = userEmail;
+  constructor(firstName, lastName, address, city, email) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.address = address;
+    this.city = city;
+    this.email = email;
   }
 }
 
@@ -37,7 +41,7 @@ let totalQuantity = 0;
 
 //Gestion du changement de l'input quantity . 
 function onChangeQuantity(product, quantity, textQuantity) {
-  textQuantity.textContent = "Qté: " + quantity
+  textQuantity.textContent = "Qté: " + quantity;
   product.quantity = quantity
   const stringifiedCart = JSON.stringify(cart)
   localStorage.setItem("item", stringifiedCart)
@@ -53,7 +57,8 @@ function onChangeQuantity(product, quantity, textQuantity) {
 };
 
 
-function onClickDeleteFromCart(product) { }
+
+
 
 function createCartHtml(products) {
 
@@ -155,91 +160,110 @@ function createCartHtml(products) {
 }
 
 //REGEX validation de formulaire TODO faire une methode commune avec en parametre un input a observer et faire un regex en fonction de l'input 
-function isValid(event, regex, errorElement, name) {
-  let isValid = regex.test(event.target.value)
+function isValid(value, regex, errorElement, name) {
+  let isValid = regex.test(value)
   if (!isValid) {
     errorElement.textContent = "Merci de rentrer un(e) " + name + " valide"
+    return false
 
   }
   else {
     errorElement.textContent = null
+    return true
 
   }
 }
 //todo scinder avec un show error is valid ne doit que tester le regex
+let numberOfError = 0;
 
-let userContact = new Contact(undefined, undefined, undefined, undefined, undefined)
-
-let firstName = document.getElementById("firstName");
-firstName.addEventListener("input", function (event) {
+let userFirstName = document.getElementById("firstName");
+userFirstName.addEventListener("input", function (event) {
   const firstNameError = document.getElementById("firstNameErrorMsg")
-  let validation = isValid(event, /^[A-Za-z ]+$/, firstNameError, "prénom")
-  userContact.userFirstName = event.target.value
+  if (!isValid(event.target.value, /^[A-Za-z ]+$/, firstNameError, "prénom")) {
+    numberOfError++;
+  };
 
-})
+});
 
 
-let lastName = document.getElementById("lastName")
-lastName.addEventListener("input", function (event) {
+let userLastName = document.getElementById("lastName")
+userLastName.addEventListener("input", function (event) {
   const lastNameError = document.getElementById("lastNameErrorMsg")
-  isValid(event, /^[A-Za-z ]+$/, lastNameError, "nom")
-  userContact.userLastname = event.target.value;
+  if (!isValid(event.target.value, /^[A-Za-z ]+$/, lastNameError, "nom")) {
+    numberOfError++;
+  }
+
+
 })
 
 
 
 
-let address = document.getElementById("address")
-address.addEventListener("input", function (event) {
+let userAddress = document.getElementById("address")
+userAddress.addEventListener("input", function (event) {
   const addressError = document.getElementById("addressErrorMsg")
-  isValid(event, /^[A-Za-z0-9 ,'-]+$/, addressError, "adresse")
-  userContact.userAddress = event.target.value
+  if (!isValid(event.target.value, /^[A-Za-z0-9 ,'-]+$/, addressError, "adresse")) {
+    numberOfError++;
+  }
+
+
 })
 
 
 
 
-let city = document.getElementById("city")
-city.addEventListener("input", function (event) {
+let userCity = document.getElementById("city")
+userCity.addEventListener("input", function (event) {
   const cityError = document.getElementById("cityErrorMsg")
-  isValid(event, /^[A-Za-z]+$/, cityError, "ville")
-  userContact.userCity = event.target.value
+  if (!isValid(event.target.value, /^[A-Za-z]+$/, cityError, "ville")) {
+    numberOfError++;
+  }
+
 })
 
 
 
 
-let email = document.getElementById("email")
+let userEmail = document.getElementById("email")
 const emailError = document.getElementById("emailErrorMsg")
-email.addEventListener("input", function (event) {
+userEmail.addEventListener("input", function (event) {
   const emailError = document.getElementById("emailErrorMsg")
-  isValid(event, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, emailError, "email")
-  userContact.userEmail = event.target.value
+  if (!isValid(event.target.value, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, emailError, "email")) {
+    numberOfError++;
+  }
+
 })
 
+function setItemToSubmit() {
+  let firstName = document.getElementById("firstName").value;
+  let lastName = document.getElementById("lastName").value;
+  let address = document.getElementById("address").value;
+  let city = document.getElementById("city").value;
+  let email = document.getElementById("email").value;
+  let cartIdArray = cart.map(x => x.id);
+  console.log(cartIdArray)
 
-
-
-
-
-
-/*
-//On click commander
-let orderButton = document.getElementById("order")
-orderButton.addEventListener("click", function (){
-  sendUserCart()
-  sendUserContact()
-})
-
-
-function sendUserCart(element) {
-  return fetch("http://localhost:3000/api/products/order", {
-    method: "POST",
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+  let itemToSend = {
+    contact: {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
     },
-    body: JSON.stringify(element)
+    products: cartIdArray
+  }
+  return itemToSend
+}
+
+function sendForm() {
+  const itemToSend = setItemToSubmit()
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    body: JSON.stringify(itemToSend),
+    headers: {
+      "Content-Type": "application/json"
+    }
   })
     .then(function (res) {
       if (res.ok) {
@@ -247,7 +271,8 @@ function sendUserCart(element) {
       }
     })
     .then(function (value) {
-      console.log(value);
+      console.log(value.orderId);
+      window.location.assign("confirmation.html?orderId=" + value.orderId);
 
 
     })
@@ -257,10 +282,31 @@ function sendUserCart(element) {
 
 };
 
-sendUserCart(userContact)
 
 
-*/
+
+//On click commander
+
+
+let orderButton = document.getElementById("order")
+orderButton.addEventListener("click", function (e) {
+  e.preventDefault()
+  if (cart.length === 0) {
+    alert("Merci d'ajouter des articles a votre panier ");
+
+  }
+
+  else if (numberOfError > 0) {
+    alert("merci de bien remplir le formulaire");
+
+
+  }
+  else {
+    sendForm();
+  }
+
+})
+
 
 createCartHtml(cart);
 
