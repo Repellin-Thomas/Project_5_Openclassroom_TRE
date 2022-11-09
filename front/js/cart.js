@@ -42,12 +42,12 @@ let totalQuantity = 0;
 //Gestion du changement de l'input quantity . 
 function onChangeQuantity(product, quantity, textQuantity) {
   textQuantity.textContent = "Qté: " + quantity;
-  product.quantity = quantity
-  const stringifiedCart = JSON.stringify(cart)
-  localStorage.setItem("item", stringifiedCart)
+  product.quantity = quantity;
+  const stringifiedCart = JSON.stringify(cart);
+  localStorage.setItem("item", stringifiedCart);
   //recalcul de la quantité et du prix total 
-  let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0)
-  let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0)
+  let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0);
+  let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0);
   //MAJ du cart et du local storage 
   let cartTotal = document.getElementById("totalPrice");
   let totalItems = document.getElementById("totalQuantity");
@@ -86,53 +86,53 @@ function createCartHtml(products) {
     itemContent.appendChild(contentDescription);
     contentDescription.classList.add("cart__item__content__description");
     let itemName = document.createElement("h2");
-    contentDescription.appendChild(itemName)
+    contentDescription.appendChild(itemName);
     itemName.textContent = product.name;
     let itemColor = document.createElement("p");
-    contentDescription.appendChild(itemColor)
+    contentDescription.appendChild(itemColor);
     itemColor.textContent = product.color;
     let itemPrice = document.createElement("p");
-    contentDescription.appendChild(itemPrice)
+    contentDescription.appendChild(itemPrice);
     itemPrice.textContent = product.price + "€";
 
     // quantité et gestion de la quantité 
     let contentSettings = document.createElement("div");
     itemContent.appendChild(contentSettings);
     contentSettings.classList.add("cart__item__content__settings");
-    let itemQuantity = document.createElement("p")
-    contentSettings.appendChild(itemQuantity)
-    itemQuantity.textContent = "Qté: " + product.quantity
-    let quantityInput = document.createElement("input")
-    contentSettings.appendChild(quantityInput)
-    quantityInput.classList.add("itemQuantity")
-    quantityInput.setAttribute("type", "number")
-    quantityInput.setAttribute("min", 1)
-    quantityInput.setAttribute("max", 100)
-    quantityInput.setAttribute("value", product.quantity)
-    quantityInput.setAttribute("name", "itemQUantity")
+    let itemQuantity = document.createElement("p");
+    contentSettings.appendChild(itemQuantity);
+    itemQuantity.textContent = "Qté: " + product.quantity;
+    let quantityInput = document.createElement("input");
+    contentSettings.appendChild(quantityInput);
+    quantityInput.classList.add("itemQuantity");
+    quantityInput.setAttribute("type", "number");
+    quantityInput.setAttribute("min", 1);
+    quantityInput.setAttribute("max", 100);
+    quantityInput.setAttribute("value", product.quantity);
+    quantityInput.setAttribute("name", "itemQUantity");
     //Event listener sur la qtt 
 
-    quantityInput.addEventListener("change", event => onChangeQuantity(product, event.target.value, itemQuantity))
+    quantityInput.addEventListener("change", event => onChangeQuantity(product, event.target.value, itemQuantity));
     //bouton delete 
-    let deleteButton = document.createElement("p")
-    contentSettings.appendChild(deleteButton)
-    deleteButton.classList.add("deleteItem")
-    deleteButton.textContent = " Supprimer"
+    let deleteButton = document.createElement("p");
+    contentSettings.appendChild(deleteButton);
+    deleteButton.classList.add("deleteItem");
+    deleteButton.textContent = " Supprimer";
     deleteButton.addEventListener("click", function () {
 
       // supprime l'article de l'itération actuelle (premier enfant de type article de elt: id =cart__items)
-      elt.removeChild(articleElement)
+      elt.removeChild(articleElement);
       // recherhe de l'indice correspondant dans le tableau cart grace a un .findIndex
       const cartIndex = cart.findIndex(function (value) {
-        return value.id == product.id && value.color == product.color
+        return value.id == product.id && value.color == product.color;
       })
       // fct splice pour supprimer un element dans cart a partir de l'index trouvé 
-      cart.splice(cartIndex, 1)
+      cart.splice(cartIndex, 1);
       //Refresh du local storage avec le nouveau cart sans l'élément supprimé 
-      const stringifiedCart = JSON.stringify(cart)
-      localStorage.setItem("item", stringifiedCart)
-      let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0)
-      let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0)
+      const stringifiedCart = JSON.stringify(cart);
+      localStorage.setItem("item", stringifiedCart);
+      let quantitySum = cart.reduce((total, product) => total + parseInt(product.quantity), 0);
+      let priceSum = cart.reduce((total, product) => total + parseInt(product.quantity) * parseInt(product.price), 0);
       //MAJ du cart et du local storage 
       let cartTotal = document.getElementById("totalPrice");
       let totalItems = document.getElementById("totalQuantity");
@@ -143,10 +143,10 @@ function createCartHtml(products) {
     })
 
     //calcul du total 
-    let integerQuantity = parseInt(product.quantity)
-    let integerPrice = parseInt(product.price)
-    totalPrice += integerQuantity * integerPrice
-    totalQuantity += integerQuantity
+    let integerQuantity = parseInt(product.quantity);
+    let integerPrice = parseInt(product.price);
+    totalPrice += integerQuantity * integerPrice;
+    totalQuantity += integerQuantity;
 
 
 
@@ -159,38 +159,48 @@ function createCartHtml(products) {
   totalItems.textContent = totalQuantity;
 }
 
-//REGEX validation de formulaire TODO faire une methode commune avec en parametre un input a observer et faire un regex en fonction de l'input 
-function isValid(value, regex, errorElement, name) {
-  let isValid = regex.test(value)
+//REGEX validation de formulaire 
+function isValid(value, regex) {
+  let isValid = regex.test(value);
   if (!isValid) {
-    errorElement.textContent = "Merci de rentrer un(e) " + name + " valide"
-    return false
+
+    return false;
 
   }
   else {
-    errorElement.textContent = null
-    return true
+
+    return true;
 
   }
 }
-//todo scinder avec un show error is valid ne doit que tester le regex
+
 let numberOfError = 0;
 
 let userFirstName = document.getElementById("firstName");
 userFirstName.addEventListener("input", function (event) {
-  const firstNameError = document.getElementById("firstNameErrorMsg")
-  if (!isValid(event.target.value, /^[A-Za-z ]+$/, firstNameError, "prénom")) {
+  const firstNameError = document.getElementById("firstNameErrorMsg");
+  if (!isValid(event.target.value, /^[A-Za-z ]+$/)) {
     numberOfError++;
-  };
+    firstNameError.textContent = "merci de rentrer un prénom valide";
+  }
+  else {
+    firstNameError.textContent = "";
+
+  }
 
 });
 
 
-let userLastName = document.getElementById("lastName")
+let userLastName = document.getElementById("lastName");
 userLastName.addEventListener("input", function (event) {
-  const lastNameError = document.getElementById("lastNameErrorMsg")
-  if (!isValid(event.target.value, /^[A-Za-z ]+$/, lastNameError, "nom")) {
+  const lastNameError = document.getElementById("lastNameErrorMsg");
+  if (!isValid(event.target.value, /^[A-Za-z ]+$/)) {
     numberOfError++;
+    lastNameError.textContent = "merci de rentrer un nom valide";
+  }
+  else {
+    lastNameError.textContent = "";
+
   }
 
 
@@ -199,13 +209,17 @@ userLastName.addEventListener("input", function (event) {
 
 
 
-let userAddress = document.getElementById("address")
+let userAddress = document.getElementById("address");
 userAddress.addEventListener("input", function (event) {
-  const addressError = document.getElementById("addressErrorMsg")
-  if (!isValid(event.target.value, /^[A-Za-z0-9 ,'-]+$/, addressError, "adresse")) {
+  const addressError = document.getElementById("addressErrorMsg");
+  if (!isValid(event.target.value, /^[A-Za-z0-9 ,'-]+$/)) {
     numberOfError++;
+    addressError.textContent = "merci de rentrer une adresse valide";
   }
+  else {
+    addressError.textContent = "";
 
+  }
 
 })
 
@@ -215,21 +229,30 @@ userAddress.addEventListener("input", function (event) {
 let userCity = document.getElementById("city")
 userCity.addEventListener("input", function (event) {
   const cityError = document.getElementById("cityErrorMsg")
-  if (!isValid(event.target.value, /^[A-Za-z]+$/, cityError, "ville")) {
+  if (!isValid(event.target.value, /^[A-Za-z]+$/)) {
     numberOfError++;
+    cityError.textContent = "merci de rentrer une ville valide";
   }
+  else {
+    cityError.textContent = "";
 
+  }
 })
 
 
 
 
-let userEmail = document.getElementById("email")
-const emailError = document.getElementById("emailErrorMsg")
+let userEmail = document.getElementById("email");
+const emailError = document.getElementById("emailErrorMsg");
 userEmail.addEventListener("input", function (event) {
   const emailError = document.getElementById("emailErrorMsg")
-  if (!isValid(event.target.value, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, emailError, "email")) {
+  if (!isValid(event.target.value, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
     numberOfError++;
+    emailError.textContent = "merci de rentrer une adresse email valide";
+  }
+  else {
+    emailError.textContent = "";
+
   }
 
 })
@@ -241,7 +264,7 @@ function setItemToSubmit() {
   let city = document.getElementById("city").value;
   let email = document.getElementById("email").value;
   let cartIdArray = cart.map(x => x.id);
-  console.log(cartIdArray)
+  console.log(cartIdArray);
 
   let itemToSend = {
     contact: {
@@ -252,12 +275,12 @@ function setItemToSubmit() {
       email: email,
     },
     products: cartIdArray
-  }
-  return itemToSend
-}
+  };
+  return itemToSend;
+};
 
 function sendForm() {
-  const itemToSend = setItemToSubmit()
+  const itemToSend = setItemToSubmit();
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(itemToSend),
@@ -288,9 +311,9 @@ function sendForm() {
 //On click commander
 
 
-let orderButton = document.getElementById("order")
+let orderButton = document.getElementById("order");
 orderButton.addEventListener("click", function (e) {
-  e.preventDefault()
+  e.preventDefault();
   if (cart.length === 0) {
     alert("Merci d'ajouter des articles a votre panier ");
 
