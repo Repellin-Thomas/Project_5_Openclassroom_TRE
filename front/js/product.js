@@ -118,8 +118,7 @@ getOneProduct().then(function (product) {
     productName = product.name;
 
     createCurrentProductHtml(product);
-    console.log(altTxt);
-    console.log(imageUrl);
+
 })
 
 

@@ -16,15 +16,7 @@ class CartId {
     this.id = id;
   }
 }
-class Contact {
-  constructor(firstName, lastName, address, city, email) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.address = address;
-    this.city = city;
-    this.email = email;
-  }
-}
+
 
 
 let currentStorage = localStorage.getItem("item");
@@ -163,42 +155,41 @@ function createCartHtml(products) {
 function isValid(value, regex) {
   let isValid = regex.test(value);
   if (!isValid) {
-
     return false;
-
   }
   else {
-
     return true;
-
   }
 }
 
-let numberOfError = 0;
+
+
 
 let userFirstName = document.getElementById("firstName");
+let isFirstNameValid = false;
 userFirstName.addEventListener("input", function (event) {
   const firstNameError = document.getElementById("firstNameErrorMsg");
   if (!isValid(event.target.value, /^[A-Za-z ]+$/)) {
-    numberOfError++;
-    firstNameError.textContent = "merci de rentrer un prénom valide";
+    isFirstNameValid = false;
+    firstNameError.textContent = "Merci de rentrer un prénom valide";
   }
   else {
+    isFirstNameValid = true;
     firstNameError.textContent = "";
-
   }
-
 });
 
 
 let userLastName = document.getElementById("lastName");
+let isLastNameValid = false;
 userLastName.addEventListener("input", function (event) {
   const lastNameError = document.getElementById("lastNameErrorMsg");
   if (!isValid(event.target.value, /^[A-Za-z ]+$/)) {
-    numberOfError++;
-    lastNameError.textContent = "merci de rentrer un nom valide";
+    isLastNameValid = false;
+    lastNameError.textContent = "Merci de rentrer un nom valide";
   }
   else {
+    isLastNameValid = true;
     lastNameError.textContent = "";
 
   }
@@ -210,13 +201,15 @@ userLastName.addEventListener("input", function (event) {
 
 
 let userAddress = document.getElementById("address");
+let isAddressValid = false;
 userAddress.addEventListener("input", function (event) {
   const addressError = document.getElementById("addressErrorMsg");
   if (!isValid(event.target.value, /^[A-Za-z0-9 ,'-]+$/)) {
-    numberOfError++;
-    addressError.textContent = "merci de rentrer une adresse valide";
+    isAddressValid = false;
+    addressError.textContent = "Merci de rentrer une adresse valide";
   }
   else {
+    isAddressValid = true;
     addressError.textContent = "";
 
   }
@@ -226,14 +219,17 @@ userAddress.addEventListener("input", function (event) {
 
 
 
-let userCity = document.getElementById("city")
+let userCity = document.getElementById("city");
+
+let isCityValid = false
 userCity.addEventListener("input", function (event) {
   const cityError = document.getElementById("cityErrorMsg")
-  if (!isValid(event.target.value, /^[A-Za-z]+$/)) {
-    numberOfError++;
-    cityError.textContent = "merci de rentrer une ville valide";
+  if (!isValid(event.target.value, /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/)) {
+    isCityValid = false;
+    cityError.textContent = "Merci de rentrer une ville valide";
   }
   else {
+    isCityValid = true;
     cityError.textContent = "";
 
   }
@@ -243,14 +239,15 @@ userCity.addEventListener("input", function (event) {
 
 
 let userEmail = document.getElementById("email");
-const emailError = document.getElementById("emailErrorMsg");
+let isEmailValid = false
 userEmail.addEventListener("input", function (event) {
   const emailError = document.getElementById("emailErrorMsg")
   if (!isValid(event.target.value, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-    numberOfError++;
-    emailError.textContent = "merci de rentrer une adresse email valide";
+    isEmailValid = false;
+    emailError.textContent = "Merci de rentrer une adresse email valide";
   }
   else {
+    isEmailValid = true;
     emailError.textContent = "";
 
   }
@@ -309,8 +306,6 @@ function sendForm() {
 
 
 //On click commander
-
-
 let orderButton = document.getElementById("order");
 orderButton.addEventListener("click", function (e) {
   e.preventDefault();
@@ -319,10 +314,9 @@ orderButton.addEventListener("click", function (e) {
 
   }
 
-  else if (numberOfError > 0) {
+  else if (!isFirstNameValid || !isLastNameValid || !isAddressValid || !isCityValid || !isEmailValid) {
     alert("merci de bien remplir le formulaire");
-
-
+    // boucle for qui parcoure tous les éléments ayant ErrorMsg dans leur ID puis lance le message d'alerte si ils ne sont pas vide 
   }
   else {
     sendForm();
