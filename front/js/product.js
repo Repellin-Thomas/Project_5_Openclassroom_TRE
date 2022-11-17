@@ -1,17 +1,15 @@
 // pour récupèrer l'id Présent dans l'url
-var url = document.URL;
-var pageId = url.substring(url.lastIndexOf('=') + 1);
-
+let params = new URLSearchParams(document.location.search);
+let pageId = params.get('id');
 
 /*objet de class product pour pourvoir classer les objets dans le local storage en fonction de leur couleur , Id (le id = page id car il sera fixe) et
  en leur associant le prix et la quantité */
 
 
 class CartProduct {
-    constructor(id, color, price, quantity, imageUrl, altTxt, name) {
+    constructor(id, color, quantity, imageUrl, altTxt, name) {
         this.id = id;
         this.color = color;
-        this.price = price;
         this.quantity = quantity;
         this.altTxt = altTxt;
         this.imageUrl = imageUrl;
@@ -28,7 +26,7 @@ let cart = [];
 //Si il y un local storage, on le met dans cart en recréant des object de classe (car ce n'est pas le cas dans le local storage)
 if (currentStorage != undefined) {
     cart = JSON.parse(currentStorage);
-    cart = cart.map(x => new CartProduct(x.id, x.color, x.price, x.quantity, x.imageUrl, x.altTxt, x.name));
+    cart = cart.map(x => new CartProduct(x.id, x.color, x.quantity, x.imageUrl, x.altTxt, x.name));
 
 }
 
@@ -80,7 +78,7 @@ function createCurrentProductHtml(product) {
 
 // fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
 
-function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
+function addToCart(id, color, quantity, imageUrl, altTxt, name) {
     let productIndex = isMyProductInCart(id, color);
     if (productIndex >= 0) {
         cart[productIndex].quantity += quantity;
@@ -88,7 +86,7 @@ function addToCart(id, color, price, quantity, imageUrl, altTxt, name) {
     }
     else {
 
-        const product = new CartProduct(id, color, price, quantity, imageUrl, altTxt, name);
+        const product = new CartProduct(id, color, quantity, imageUrl, altTxt, name);
         cart.push(product);
     }
 
@@ -130,18 +128,16 @@ product.addEventListener('click', function () {
     // on récupère les VALEURS de color quantity et price et on les mets dans des variables 
     let color = document.getElementById('colors').value;
     let quantity = document.getElementById('quantity').value;
-    let price = document.getElementById('price').textContent;
-    let image = document.getElementBy;
     // parse int permet de transformer les prix et quantité string en integer
     quantity = parseInt(quantity);
-    price = parseInt(price);
     // if color empeche le produit d'être ajouté si il n'y a pas de couleur sélectionnée 
     if (color != undefined && quantity > 0) {
-        addToCart(pageId, color, price, quantity, imageUrl, altTxt, productName)
+        addToCart(pageId, color, quantity, imageUrl, altTxt, productName)
         const stringifiedCart = JSON.stringify(cart);
         localStorage.setItem("item", stringifiedCart);
     }
 
 })
+
 
 

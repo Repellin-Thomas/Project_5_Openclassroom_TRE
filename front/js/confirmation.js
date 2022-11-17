@@ -1,4 +1,3 @@
-var url = document.URL;
-var pageId = url.substring(url.lastIndexOf('=') + 1);
+let params = new URLSearchParams(document.location.search);
 
-document.getElementById('orderId').innerText = pageId;
+document.getElementById('orderId').innerText = params;

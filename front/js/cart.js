@@ -1,8 +1,7 @@
 //Etape 1 récupèrer le local storage et le classer dans une liste de produit 
 class CartProduct {
-  constructor(color, price, quantity, id, imageUrl, altTxt, name) {
+  constructor(color, quantity, id, imageUrl, altTxt, name) {
     this.id = id;
-    this.price = price;
     this.color = color;
     this.quantity = quantity;
     this.imageUrl = imageUrl;
@@ -10,12 +9,10 @@ class CartProduct {
     this.name = name;
 
   }
+
 }
-class CartId {
-  constructor(id) {
-    this.id = id;
-  }
-}
+
+
 
 
 
@@ -24,12 +21,33 @@ let cart = [];
 
 if (currentStorage != undefined) {
   cart = JSON.parse(currentStorage);
-  cart = cart.map(x => new CartProduct(x.color, x.price, x.quantity, x.id, x.imageUrl, x.altTxt, x.name));
+  cart = cart.map(x => new CartProduct(x.color, x.quantity, x.id, x.imageUrl, x.altTxt, x.name));
 }
 
 
 let totalPrice = 0;
 let totalQuantity = 0;
+
+function getPriceFromId(product) {
+  return fetch("http://localhost:3000/api/products/" + product.id)
+    .then(function (res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function (value) {
+      return value.price;
+
+    })
+    .catch(function (err) {
+      // Une erreur est survenue
+    });
+
+
+}
+
+
+
 
 //Gestion du changement de l'input quantity . 
 function onChangeQuantity(product, quantity, textQuantity) {
@@ -52,9 +70,10 @@ function onChangeQuantity(product, quantity, textQuantity) {
 
 
 
-function createCartHtml(products) {
+async function createCartHtml(products) {
 
   for (let product of products) {
+    product.price = await getPriceFromId(product);
     //structure globale
     let elt = document.getElementById('cart__items');
     let articleElement = document.createElement("article");
@@ -69,7 +88,7 @@ function createCartHtml(products) {
     let image = document.createElement("img");
     imageContainer.appendChild(image);
     image.setAttribute("src", product.imageUrl);
-    image.setAttribute("alt", product.altTxt)
+    image.setAttribute("alt", product.altTxt);
     // nom, prix, couleur choisie
     let itemContent = document.createElement("div");
     articleElement.appendChild(itemContent);
