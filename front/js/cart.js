@@ -239,7 +239,6 @@ userAddress.addEventListener("input", function (event) {
 
 
 let userCity = document.getElementById("city");
-
 let isCityValid = false
 userCity.addEventListener("input", function (event) {
   const cityError = document.getElementById("cityErrorMsg")
@@ -328,10 +327,15 @@ function sendForm() {
 let orderButton = document.getElementById("order");
 orderButton.addEventListener("click", function (e) {
   e.preventDefault();
+  userFirstName.dispatchEvent(new Event('input', { bubbles: true }));
+  userLastName.dispatchEvent(new Event('input', { bubbles: true }));
+  userAddress.dispatchEvent(new Event('input', { bubbles: true }));
+  userCity.dispatchEvent(new Event('input', { bubbles: true }));
+  userEmail.dispatchEvent(new Event('input', { bubbles: true }));
   if (cart.length === 0) {
     alert("Merci d'ajouter des articles a votre panier ");
-
   }
+
 
   else if (!isFirstNameValid || !isLastNameValid || !isAddressValid || !isCityValid || !isEmailValid) {
     alert("merci de bien remplir le formulaire");
