@@ -279,7 +279,7 @@ function setItemToSubmit() {
   let city = document.getElementById("city").value;
   let email = document.getElementById("email").value;
   let cartIdArray = cart.map(x => x.id);
-  console.log(cartIdArray);
+
 
   let itemToSend = {
     contact: {

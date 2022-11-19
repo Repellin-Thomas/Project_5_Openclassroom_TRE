@@ -78,6 +78,19 @@ function createCurrentProductHtml(product) {
 
 // fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
 
+
+//calculs pour savoir si le produit existe EN RECUPERANT SON INDICE DANS LA LISTE (i) == .find
+function isMyProductInCart(id, color) {
+    //todo boucle while
+    for (let i = 0; i < cart.length; i++) {
+        const product = cart[i];
+        if (color === product.color && id === product.id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 function addToCart(id, color, quantity, imageUrl, altTxt, name) {
     let productIndex = isMyProductInCart(id, color);
     if (productIndex >= 0) {
@@ -93,17 +106,7 @@ function addToCart(id, color, quantity, imageUrl, altTxt, name) {
 }
 
 
-//calculs pour savoir si le produit existe EN RECUPERANT SON INDICE DANS LA LISTE (i) == .find
-function isMyProductInCart(id, color) {
-    //todo boucle while
-    for (let i = 0; i < cart.length; i++) {
-        const product = cart[i];
-        if (color === product.color && id === product.id) {
-            return i;
-        }
-    }
-    return -1;
-}
+
 
 
 
@@ -131,7 +134,7 @@ product.addEventListener('click', function () {
     // parse int permet de transformer les prix et quantité string en integer
     quantity = parseInt(quantity);
     // if color empeche le produit d'être ajouté si il n'y a pas de couleur sélectionnée 
-    if (color != undefined && quantity > 0) {
+    if (color !== '' && quantity > 0) {
         addToCart(pageId, color, quantity, imageUrl, altTxt, productName)
         const stringifiedCart = JSON.stringify(cart);
         localStorage.setItem("item", stringifiedCart);
