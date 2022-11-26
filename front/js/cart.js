@@ -9,12 +9,7 @@ class CartProduct {
     this.name = name;
 
   }
-
 }
-
-
-
-
 
 let currentStorage = localStorage.getItem("item");
 let cart = [];
@@ -27,6 +22,7 @@ if (currentStorage != undefined) {
 
 let totalPrice = 0;
 let totalQuantity = 0;
+
 
 function getPriceFromId(product) {
   return fetch("http://localhost:3000/api/products/" + product.id)
@@ -71,7 +67,6 @@ function onChangeQuantity(product, quantity, textQuantity) {
 
 
 async function createCartHtml(products) {
-
   for (let product of products) {
     product.price = await getPriceFromId(product);
     //structure globale
@@ -271,7 +266,7 @@ userEmail.addEventListener("input", function (event) {
   }
 
 })
-
+//Met en place de manière ordonnée les éléments envoyés par la requete post (rangés objet itemToSend)
 function setItemToSubmit() {
   let firstName = document.getElementById("firstName").value;
   let lastName = document.getElementById("lastName").value;
@@ -280,7 +275,7 @@ function setItemToSubmit() {
   let email = document.getElementById("email").value;
   let cartIdArray = cart.map(x => x.id);
 
-
+  //Objet a envoyer dans la requete post 
   let itemToSend = {
     contact: {
       firstName: firstName,
@@ -293,7 +288,7 @@ function setItemToSubmit() {
   };
   return itemToSend;
 };
-
+//Envoie le formulaire grace aux données rentrés par l'utilisateur ainsi qu'une liste composée uniquement de product id
 function sendForm() {
   const itemToSend = setItemToSubmit();
   fetch("http://localhost:3000/api/products/order", {
@@ -327,20 +322,24 @@ function sendForm() {
 let orderButton = document.getElementById("order");
 orderButton.addEventListener("click", function (e) {
   e.preventDefault();
+
+  //revérification du formulaire avec trigger de l'input sur le onclick 
   userFirstName.dispatchEvent(new Event('input', { bubbles: true }));
   userLastName.dispatchEvent(new Event('input', { bubbles: true }));
   userAddress.dispatchEvent(new Event('input', { bubbles: true }));
   userCity.dispatchEvent(new Event('input', { bubbles: true }));
   userEmail.dispatchEvent(new Event('input', { bubbles: true }));
+  //vérification de la présence d'articles dans le panier
   if (cart.length === 0) {
     alert("Merci d'ajouter des articles a votre panier ");
   }
 
-
+  //vérification de la validité du formulaire
   else if (!isFirstNameValid || !isLastNameValid || !isAddressValid || !isCityValid || !isEmailValid) {
     alert("merci de bien remplir le formulaire");
-    // boucle for qui parcoure tous les éléments ayant ErrorMsg dans leur ID puis lance le message d'alerte si ils ne sont pas vide 
+
   }
+  //appel a la fonction d'envoi de formulaire
   else {
     sendForm();
   }

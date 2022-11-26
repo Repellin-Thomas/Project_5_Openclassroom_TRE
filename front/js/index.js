@@ -73,9 +73,6 @@ getAllProducts().then(function (products) {
 
 
 
-//Boucle for pour ranger les produits dans une array -> pour chaque itération créer un objet new Product et le PUSH dans une array prévue a cet effet
-
-
 
 
 
@@ -92,4 +89,4 @@ CF le code à créer en remplaçant les champs prévu a cet effet par les variab
 
 
 
-// methode eventListener ON CLICK pour récupérer l'Id 
+

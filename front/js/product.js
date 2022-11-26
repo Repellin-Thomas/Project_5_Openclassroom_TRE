@@ -76,7 +76,7 @@ function createCurrentProductHtml(product) {
     }
 }
 
-// fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
+
 
 
 //calculs pour savoir si le produit existe EN RECUPERANT SON INDICE DANS LA LISTE (i) == .find
@@ -91,6 +91,7 @@ function isMyProductInCart(id, color) {
     return -1;
 }
 
+// fonction pour ajouter un produit ainsi que sa quantité : on a l'indice du produit pour le comparer aux produits existants de la liste . 
 function addToCart(id, color, quantity, imageUrl, altTxt, name) {
     let productIndex = isMyProductInCart(id, color);
     if (productIndex >= 0) {
