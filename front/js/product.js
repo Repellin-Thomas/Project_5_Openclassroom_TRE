@@ -97,13 +97,15 @@ function addToCart(id, color, quantity, imageUrl, altTxt, name) {
     if (productIndex >= 0) {
         cart[productIndex].quantity += quantity;
 
+
     }
     else {
 
         const product = new CartProduct(id, color, quantity, imageUrl, altTxt, name);
         cart.push(product);
-    }
 
+    }
+    alert('le(s) produit(s) ont bien été ajoutés au panier')
 }
 
 
@@ -135,7 +137,7 @@ product.addEventListener('click', function () {
     // parse int permet de transformer les prix et quantité string en integer
     quantity = parseInt(quantity);
     // if color empeche le produit d'être ajouté si il n'y a pas de couleur sélectionnée 
-    if (color !== '' && quantity > 0) {
+    if (color !== '' && 100 >= quantity && quantity > 0) {
         addToCart(pageId, color, quantity, imageUrl, altTxt, productName)
         const stringifiedCart = JSON.stringify(cart);
         localStorage.setItem("item", stringifiedCart);

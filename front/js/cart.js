@@ -42,11 +42,22 @@ function getPriceFromId(product) {
 
 }
 
-
-
+function displayForm(cart) {
+  if (!cart.length) {
+    document.querySelector('.cart__order__form').style.display = 'none'
+  }
+}
+displayForm(cart)
 
 //Gestion du changement de l'input quantity . 
-function onChangeQuantity(product, quantity, textQuantity) {
+function onChangeQuantity(product, quantity, textQuantity, inputElement) {
+  if (quantity > 100) {
+    alert('merci de rentrer une quantité valide');
+    quantity = product.quantity;
+    inputElement.value = product.quantity;
+
+    return
+  }
   textQuantity.textContent = "Qté: " + quantity;
   product.quantity = quantity;
   const stringifiedCart = JSON.stringify(cart);
@@ -118,7 +129,7 @@ async function createCartHtml(products) {
     quantityInput.setAttribute("name", "itemQUantity");
     //Event listener sur la qtt 
 
-    quantityInput.addEventListener("change", event => onChangeQuantity(product, event.target.value, itemQuantity));
+    quantityInput.addEventListener("change", event => onChangeQuantity(product, event.target.value, itemQuantity, quantityInput));
     //bouton delete 
     let deleteButton = document.createElement("p");
     contentSettings.appendChild(deleteButton);
@@ -144,6 +155,7 @@ async function createCartHtml(products) {
       let totalItems = document.getElementById("totalQuantity");
       cartTotal.textContent = priceSum;
       totalItems.textContent = quantitySum;
+      displayForm(cart)
 
 
     })
@@ -164,6 +176,9 @@ async function createCartHtml(products) {
   cartTotal.textContent = totalPrice;
   totalItems.textContent = totalQuantity;
 }
+
+
+createCartHtml(cart);
 
 //REGEX validation de formulaire 
 function isValid(value, regex) {
@@ -342,12 +357,12 @@ orderButton.addEventListener("click", function (e) {
   //appel a la fonction d'envoi de formulaire
   else {
     sendForm();
+    localStorage.clear();
+
   }
 
 })
 
-
-createCartHtml(cart);
 
 
 
