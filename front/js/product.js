@@ -141,7 +141,9 @@ product.addEventListener('click', function () {
         addToCart(pageId, color, quantity, imageUrl, altTxt, productName)
         const stringifiedCart = JSON.stringify(cart);
         localStorage.setItem("item", stringifiedCart);
+        return
     }
+    alert('merci de rentrer une quantité et une couleur valide')
 
 })
 

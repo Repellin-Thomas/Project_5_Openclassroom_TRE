@@ -49,6 +49,7 @@ function displayForm(cart) {
 }
 displayForm(cart)
 
+
 //Gestion du changement de l'input quantity . 
 function onChangeQuantity(product, quantity, textQuantity, inputElement) {
   if (quantity > 100) {
