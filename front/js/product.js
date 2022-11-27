@@ -95,8 +95,12 @@ function isMyProductInCart(id, color) {
 function addToCart(id, color, quantity, imageUrl, altTxt, name) {
     let productIndex = isMyProductInCart(id, color);
     if (productIndex >= 0) {
+        if (cart[productIndex].quantity + quantity >= 100) {
+            cart[productIndex].quantity = 100;
+            alert('Attention le compte maximum d un article de même type est 100. Votre panier contient déjà 100 articles de ce type et nous ne pouvons en ajouter d avantage')
+            return
+        }
         cart[productIndex].quantity += quantity;
-
 
     }
     else {
